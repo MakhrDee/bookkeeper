@@ -5,9 +5,17 @@
 from bookkeeper.models.category import Category
 from bookkeeper.models.expense import Expense
 from bookkeeper.repository.memory_repository import MemoryRepository
+from bookkeeper.repository.sqlite_repository import SQLiteRepository
 from bookkeeper.utils import read_tree
 
-cat_repo = MemoryRepository[Category]()
+
+class Test:  # TODO: разобраться, в каком файле размещать такие тесты
+    pk: int
+    def __init__(self, s: str) -> None:
+        self.s = s
+
+
+cat_repo = SQLiteRepository[Category]('test.db', Test)  # TODO: репозиторий sqlite пока не реализован
 exp_repo = MemoryRepository[Expense]()
 
 cats = '''
