@@ -20,9 +20,8 @@ class SQLiteRepository(AbstractRepository[T]):
             cur = con.cursor()
             cur.execute('PRAGMA foreign_keys = ON')
             cur.execute(
-                #f'INSERT INTO {self.table_name} ({names}) VALUES ({p})',
-                'select 123'
-                #values
+                f'INSERT INTO {self.table_name} ({names}) VALUES ({p})',
+                values
             )
             obj.pk = cur.lastrowid
         con.close()
