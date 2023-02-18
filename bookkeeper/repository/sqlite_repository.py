@@ -1,6 +1,11 @@
+"""
+# TODO: ADD DOCSTRING
+"""
+
 import sqlite3
 
 from inspect import get_annotations
+from typing import Any
 from bookkeeper.repository.abstract_repository import AbstractRepository, T
 
 
@@ -10,7 +15,6 @@ class SQLiteRepository(AbstractRepository[T]):
         self.table_name = cls.__name__.lower()
         self.fields = get_annotations(cls, eval_str=True)
         self.fields.pop('pk')
-
 
     def add(self, obj: T) -> int:
         names = ', '.join(self.fields.keys())
@@ -27,18 +31,22 @@ class SQLiteRepository(AbstractRepository[T]):
         con.close()
         return obj.pk
 
-
     def get(self, pk: int) -> T | None:
         """ Получить объект по id """
         pass
 
-    def get_all(self, where: dict[str, any] | None = None) -> list[T]:
+    def get_all(self, where: dict[str, Any] | None = None) -> list[T]:
         """
         Получить все записи по некоторому условию
         where - условие в виде словаря {'название_поля': значение}
         если условие не задано (по умолчанию), вернуть все записи
         """
-        pass
+        with sqlite3.connect(self.db_file) as con:
+            cur = con.cursor()
+            cur.execute(f'SELECT * FROM {self.table_name}') # TODO: добавить метод WHERE
+            res = cur.fetchall() # Возвращает список корежей из БД
+        con.close()
+        return res
 
     def update(self, obj: T) -> None:
         """ Обновить данные об объекте. Объект должен содержать поле pk. """
