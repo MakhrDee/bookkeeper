@@ -161,3 +161,4 @@ cython_debug/
 SQLite/sqldiff.exe
 SQLite/sqlite3.exe
 SQLite/sqlite3_analyzer.exe
+test.db
