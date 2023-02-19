@@ -3,13 +3,17 @@
 """
 
 import sqlite3
+from abc import ABC
 
 from inspect import get_annotations
 from typing import Any
 from bookkeeper.repository.abstract_repository import AbstractRepository, T
 
 
-class SQLiteRepository(AbstractRepository[T]):
+class SQLiteRepository(AbstractRepository[T], ABC):
+    """
+    TODO: ADD DOCSTRING
+    """
     def __init__(self, db_file: str, cls: type) -> None:
         self.db_file = db_file
         self.table_name = cls.__name__.lower()
@@ -23,17 +27,32 @@ class SQLiteRepository(AbstractRepository[T]):
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
             cur.execute('PRAGMA foreign_keys = ON')
-            cur.execute(
-                f'INSERT INTO {self.table_name} ({names}) VALUES ({p})',
-                values
-            )
+            try:
+                cur.execute(
+                    f'INSERT INTO {self.table_name} ({names}) VALUES ({p})',
+                    values
+                )
+            except sqlite3.OperationalError:
+                cur.execute(
+                    f'CREATE TABLE "Category" '
+                    f'("id" integer primary key autoincrement, "name" text, "parent" integer);'
+                )
+                cur.execute(
+                    f'INSERT INTO {self.table_name} ({names}) VALUES ({p})',
+                    values
+                )
             obj.pk = cur.lastrowid
         con.close()
         return obj.pk
 
     def get(self, pk: int) -> T | None:
         """ Получить объект по id """
-        pass
+        with sqlite3.connect(self.db_file) as con:
+            cur = con.cursor()
+            cur.execute(f'SELECT * FROM {self.table_name} WHERE id = {pk}')
+            res: T = cur.fetchone()  # Возвращает список из корежа со значением из БД
+        con.close()
+        return res
 
     def get_all(self, where: dict[str, Any] | None = None) -> list[T]:
         """
@@ -43,8 +62,8 @@ class SQLiteRepository(AbstractRepository[T]):
         """
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
-            cur.execute(f'SELECT * FROM {self.table_name}') # TODO: добавить метод WHERE
-            res = cur.fetchall() # Возвращает список корежей из БД
+            cur.execute(f'SELECT * FROM {self.table_name}')  # TODO: добавить метод WHERE
+            res = cur.fetchall()  # Возвращает список корежей из БД
         con.close()
         return res
 
@@ -54,4 +73,7 @@ class SQLiteRepository(AbstractRepository[T]):
 
     def delete(self, pk: int) -> None:
         """ Удалить запись """
-        pass
+        with sqlite3.connect(self.db_file) as con:
+            cur = con.cursor()
+            cur.execute(f'DELETE FROM {self.table_name} WHERE id = {pk}')
+        con.close()
