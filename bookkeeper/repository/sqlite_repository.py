@@ -19,27 +19,28 @@ class SQLiteRepository(AbstractRepository[T], ABC):
         self.table_name = cls.__name__.lower()
         self.fields = get_annotations(cls, eval_str=True)
         self.fields.pop('pk')
+        with sqlite3.connect(self.db_file) as con:
+            cur = con.cursor()
+            cur.execute(
+                f'CREATE TABLE IF NOT EXISTS "Category" '
+                f'("id" integer primary key autoincrement, "name" text, "parent" integer);'
+                )
+        con.close()
 
     def add(self, obj: T) -> int:
+        """
+        Добавить объект в репозиторий, вернуть id объекта,
+        также записать id в атрибут pk
+        """
         names = ', '.join(self.fields.keys())
         p = ', '.join("?" * len(self.fields))
         values = [getattr(obj, x) for x in self.fields]
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
             cur.execute('PRAGMA foreign_keys = ON')
-            try:
-                cur.execute(
-                    f'INSERT INTO {self.table_name} ({names}) VALUES ({p})',
-                    values
-                )
-            except sqlite3.OperationalError:
-                cur.execute(
-                    f'CREATE TABLE "Category" '
-                    f'("id" integer primary key autoincrement, "name" text, "parent" integer);'
-                )
-                cur.execute(
-                    f'INSERT INTO {self.table_name} ({names}) VALUES ({p})',
-                    values
+            cur.execute(
+                f'INSERT INTO {self.table_name} ({names}) VALUES ({p})',
+                values
                 )
             obj.pk = cur.lastrowid
         con.close()
