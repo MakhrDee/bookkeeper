@@ -35,7 +35,13 @@ while True:
         print(*cat_repo.get_all(), sep='\n')
     elif cmd == 'расходы':
         print(*exp_repo.get_all(), sep='\n')
-    elif cmd[0].isdecimal():
+    elif cmd.isdigit():
+        if cat_repo.get(int(cmd)) is not None:
+            print(cat_repo.get(int(cmd)))
+        else:
+            print(f'неверный id')
+        continue
+    elif cmd[0].isdecimal():  # TODO: вызывает ошибку AttributeError
         amount, name = cmd.split(maxsplit=1)
         try:
             cat = cat_repo.get_all({'name': name})[0]
