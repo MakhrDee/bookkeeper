@@ -9,6 +9,7 @@
 ################################################################################
 
 import sys
+
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
     QSize, QTime, QUrl, Qt)
@@ -20,7 +21,6 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QGrid
     QHeaderView, QLabel, QLineEdit, QMainWindow,
     QPushButton, QSizePolicy, QTableView, QTreeView,
     QVBoxLayout, QWidget)
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
