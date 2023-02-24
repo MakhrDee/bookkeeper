@@ -8,7 +8,6 @@ from bookkeeper.repository.memory_repository import MemoryRepository
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
 from bookkeeper.utils import read_tree
 
-
 cat_repo = SQLiteRepository[Category]('test.db', Category)  # TODO: репозиторий sqlite пока не реализован
 exp_repo = MemoryRepository[Expense]()
 
@@ -35,19 +34,45 @@ while True:
         print(*cat_repo.get_all(), sep='\n')
     elif cmd == 'расходы':
         print(*exp_repo.get_all(), sep='\n')
+    elif cmd == 'добавить':
+        obj = tuple(input('$> ').split(maxsplit=2))
+        cat_repo.add(obj)
     elif cmd.isdigit():
         if cat_repo.get(int(cmd)) is not None:
             print(cat_repo.get(int(cmd)))
+            print(cmd[0])
         else:
             print(f'неверный id')
         continue
+    elif 'del' in cmd and cmd[-1].isdigit():
+        pk = cmd.split(maxsplit=1)[1]
+        if cat_repo.get(int(pk)) is not None:
+            cat_repo.delete(int(pk))
+            print(*cat_repo.get_all(), sep='\n')
+        else:
+            print(f'неверный id')
+        continue
+    elif 'up' in cmd and cmd[-1].isdigit():
+        pk = cmd.split(maxsplit=1)[1]
+        if cat_repo.get(int(pk)) is not None:
+            cat_repo.update(cat_repo.get(int(pk)))
+            print(*cat_repo.get_all(), sep='\n')
+        else:
+            print(f'неверный id')
+            continue
+        continue
+
     elif cmd[0].isdecimal():  # TODO: вызывает ошибку AttributeError
         amount, name = cmd.split(maxsplit=1)
         try:
             cat = cat_repo.get_all({'name': name})[0]
+            print(cat)
         except IndexError:
             print(f'категория {name} не найдена')
             continue
+        # cat = cat[int(input('$> '))]
         exp = Expense(int(amount), cat.pk)
         exp_repo.add(exp)
         print(exp)
+
+    # TODO: добавить методы add и update

@@ -1,12 +1,33 @@
 from bookkeeper.repository.memory_repository import MemoryRepository
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
+from bookkeeper.models.category import Category
+from bookkeeper.repository.abstract_repository import AbstractRepository, T
+from abc import ABC
 import pytest
 
-@pytest.mark.parametrize("repo",
-MemoryRepository(), SQLiteRepository(...))
 
-@pytest.mark.parametrize("custom_class",
-MemoryRepository(), SQLiteRepository(...))
+'''@pytest.fixture
+def custom_class():
+    class Custom:
+        pk = 0
+
+    return Custom
+
+
+@pytest.fixture
+def repo():
+    return SQLiteRepository(AbstractRepository[T], Category)'''
+@pytest.fixture
+def repo():
+    return MemoryRepository()  # TODO: понять, что возвращать
+@pytest.fixture
+def custom_class():
+    class Custom:
+        pk = 0
+
+    return Custom
+
+
 def test_crud(repo, custom_class):
     obj = custom_class()
     pk = repo.add(obj)
@@ -18,6 +39,7 @@ def test_crud(repo, custom_class):
     assert repo.get(pk) == obj2
     repo.delete(pk)
     assert repo.get(pk) is None
+
 
 def test_cannot_add_with_pk(repo, custom_class):
     obj = custom_class()
@@ -59,3 +81,5 @@ def test_get_all_with_condition(repo, custom_class):
         objects.append(o)
     assert repo.get_all({'name': '0'}) == [objects[0]]
     assert repo.get_all({'test': 'test'}) == objects
+
+# TODO: тест на foreign keys
