@@ -10,7 +10,7 @@ from typing import Any
 from bookkeeper.repository.abstract_repository import AbstractRepository, T
 
 
-class SQLiteRepository(AbstractRepository[T], ABC):
+class SQLiteRepository(AbstractRepository[T]):
     """
     TODO: ADD DOCSTRING
     """
@@ -63,14 +63,23 @@ class SQLiteRepository(AbstractRepository[T], ABC):
         """
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
-            cur.execute(f'SELECT * FROM {self.table_name}')  # TODO: добавить метод WHERE
+            if where is not None:
+                k, v = list(where.keys()), list(where.values())
+                cur.execute(f'SELECT * FROM {self.table_name} WHERE {k[0]} = "{v[0]}";')
+            else:
+                cur.execute(f'SELECT * FROM {self.table_name}')
             res = cur.fetchall()  # Возвращает список корежей из БД
         con.close()
         return res
 
     def update(self, obj: T) -> None:
         """ Обновить данные об объекте. Объект должен содержать поле pk. """
-        pass
+
+        '''names = ' = ?, '.join(self.fields.keys())
+        with sqlite3.connect(self.db_file) as con:
+            cur = con.cursor()
+            cur.execute(f'UPDATE {self.table_name} SET ({names}) WHERE id = {obj.pk}', self.fields)
+        con.close()'''
 
     def delete(self, pk: int) -> None:
         """ Удалить запись """
@@ -78,3 +87,4 @@ class SQLiteRepository(AbstractRepository[T], ABC):
             cur = con.cursor()
             cur.execute(f'DELETE FROM {self.table_name} WHERE id = {pk}')
         con.close()
+
