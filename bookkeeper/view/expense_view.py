@@ -5,6 +5,7 @@ from bookkeeper.models.category import Category
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
 cat_repo = SQLiteRepository[Category]('test.db', Category)
 
+
 class TableModel(QtCore.QAbstractTableModel):
     def __init__(self, data):
         super(TableModel, self).__init__()
@@ -25,7 +26,6 @@ class TableModel(QtCore.QAbstractTableModel):
         # The following takes the first sub-list, and returns
         # the length (only works if all rows are an equal length)
         return len(self._data[0])
-
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -52,7 +52,6 @@ class MainWindow(QtWidgets.QMainWindow):
         amount_line_edit = QLineEdit()
 
         bottom_controls.addWidget(amount_line_edit, 0, 1)
-        #bottom_controls.addWidget(QLabel('=============='), 0, 2)
         bottom_controls.addWidget(QLabel('Категория'), 1, 0)
 
         category_dropdown = QComboBox()
@@ -73,8 +72,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         data = cat_repo.get_all()
 
-        self.model = TableModel(data)
-        self.expenses_grid.setModel(self.model)
+        self.item_model = TableModel(data)
+        self.expenses_grid.setModel(self.item_model)
 
         self.widget = QWidget()
         self.widget.setLayout(self.layout)
