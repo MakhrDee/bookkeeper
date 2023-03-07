@@ -57,8 +57,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.category_edit_button = QPushButton('Редактировать')
         self.bottom_controls.addWidget(self.category_edit_button, 1, 2)
 
+
+        self.bottom_controls.addWidget(QLabel('Комментарий'), 2, 0)
+        self.comment_line_edit = QLineEdit()
+        self.bottom_controls.addWidget(self.comment_line_edit, 2, 1)
         self.expense_add_button = QPushButton('Добавить')
-        self.bottom_controls.addWidget(self.expense_add_button, 2, 1)
+        self.bottom_controls.addWidget(self.expense_add_button, 3, 1)
 
         self.bottom_widget = QWidget()
         self.bottom_widget.setLayout(self.bottom_controls)
@@ -89,3 +93,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def get_selected_cat(self) -> int:
         return self.category_dropdown.itemData(self.category_dropdown.currentIndex())
+
+    def get_comment(self) -> str:
+        return str(self.comment_line_edit.text())

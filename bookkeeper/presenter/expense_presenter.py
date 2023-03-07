@@ -23,6 +23,7 @@ class ExpensePresenter:
     def handle_expense_add_button_clicked(self):
         cat_pk = self.view.get_selected_cat()
         amount = self.view.get_amount()
-        exp = Expense(int(amount), cat_pk)
+        comment = self.view.get_comment()
+        exp = Expense(int(amount), cat_pk, str(comment))
         self.exp_repo.add(exp)
         self.update_expense_data()
