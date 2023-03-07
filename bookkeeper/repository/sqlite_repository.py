@@ -4,10 +4,16 @@
 
 import sqlite3
 from abc import ABC
-
+from dataclasses import dataclass
 from inspect import get_annotations
 from typing import Any
 from bookkeeper.repository.abstract_repository import AbstractRepository, T
+
+
+@dataclass
+class Test:
+    name: str
+    pk: int = 0
 
 
 class SQLiteRepository(AbstractRepository[T]):
@@ -23,8 +29,13 @@ class SQLiteRepository(AbstractRepository[T]):
             cur = con.cursor()
             cur.execute(
                 f'CREATE TABLE IF NOT EXISTS "Category" '
-                f'("id" integer primary key autoincrement, "name" text, "parent" integer);'
+                f'("id" integer primary key autoincrement, "name" text, "parent" integer, "comment" text);'
                 )
+            cur.execute(
+                f'CREATE TABLE IF NOT EXISTS "Expense" '
+                f'("id" integer primary key autoincrement, "amount" text, "category" text, '
+                f'"expense_date" text, "added_date" text, "comment" text);'
+            )
         con.close()
 
     def add(self, obj: T) -> int:
@@ -88,3 +99,6 @@ class SQLiteRepository(AbstractRepository[T]):
             cur.execute(f'DELETE FROM {self.table_name} WHERE id = {pk}')
         con.close()
 
+# r = SQLiteRepository('test.sqlite', Test)
+# o = Test('John')
+# r.add(o)'''

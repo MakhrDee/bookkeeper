@@ -9,7 +9,7 @@ from bookkeeper.repository.sqlite_repository import SQLiteRepository
 from bookkeeper.utils import read_tree
 
 cat_repo = SQLiteRepository[Category]('test.db', Category)  # TODO: репозиторий sqlite пока не реализован
-exp_repo = MemoryRepository[Expense]()
+exp_repo = SQLiteRepository[Expense]('test.db', Expense)
 
 cats = '''
 продукты
@@ -21,7 +21,7 @@ cats = '''
 одежда
 '''.splitlines()
 
-Category.create_from_tree(read_tree(cats), cat_repo)  # TODO: отключить выполнение при каждом запуске
+#Category.create_from_tree(read_tree(cats), cat_repo)  # TODO: отключить выполнение при каждом запуске
 
 while True:
     try:
@@ -35,8 +35,9 @@ while True:
     elif cmd == 'расходы':
         print(*exp_repo.get_all(), sep='\n')
     elif cmd == 'добавить':
-        obj = tuple(input('$> ').split(maxsplit=2))
-        cat_repo.add(obj)
+        obj = input('$> ')
+        cat_repo.add(Category(obj))
+        print(*cat_repo.get_all(), sep='\n')
     elif cmd.isdigit():
         if cat_repo.get(int(cmd)) is not None:
             print(cat_repo.get(int(cmd)))
