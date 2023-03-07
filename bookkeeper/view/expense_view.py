@@ -35,11 +35,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.layout.addWidget(QLabel('Последние расходы'))
         self.expenses_grid = QtWidgets.QTableView()
         self.layout.addWidget(self.expenses_grid)
+
+
+
+
+
+
         self.layout.addWidget(QLabel('Бюджет'))
         #self.layout.addWidget(QLabel('<TODO: таблица бюджета>\n\n\n\n\n\n\n\n'))
         self.budget = QtWidgets.QTableView()
         self.layout.addWidget(self.budget)
-
 
         self.bottom_controls = QGridLayout()
 
@@ -57,7 +62,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.category_edit_button = QPushButton('Редактировать')
         self.bottom_controls.addWidget(self.category_edit_button, 1, 2)
 
-
         self.bottom_controls.addWidget(QLabel('Комментарий'), 2, 0)
         self.comment_line_edit = QLineEdit()
         self.bottom_controls.addWidget(self.comment_line_edit, 2, 1)
@@ -68,9 +72,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.bottom_widget.setLayout(self.bottom_controls)
 
         self.layout.addWidget(self.bottom_widget)
-
-
-
 
         self.widget = QWidget()
         self.widget.setLayout(self.layout)

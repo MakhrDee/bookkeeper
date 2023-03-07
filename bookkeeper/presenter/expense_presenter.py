@@ -24,6 +24,6 @@ class ExpensePresenter:
         cat_pk = self.view.get_selected_cat()
         amount = self.view.get_amount()
         comment = self.view.get_comment()
-        exp = Expense(int(amount), cat_pk, str(comment))
+        exp = Expense(int(round(amount)), self.cat_data[cat_pk-1][1], str(comment))
         self.exp_repo.add(exp)
         self.update_expense_data()
