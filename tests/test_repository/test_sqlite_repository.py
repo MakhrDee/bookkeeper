@@ -1,32 +1,20 @@
-from bookkeeper.repository.memory_repository import MemoryRepository
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
-from bookkeeper.models.category import Category
-from bookkeeper.repository.abstract_repository import AbstractRepository, T
-from abc import ABC
 import pytest
+from dataclasses import dataclass
 
 
-'''@pytest.fixture
+@dataclass
+class Test:
+    #name: str
+    pk: int = 0
+
+@pytest.fixture
 def custom_class():
-    class Custom:
-        pk = 0
-
-    return Custom
-
+    return Test
 
 @pytest.fixture
 def repo():
-    return SQLiteRepository(AbstractRepository[T], Category)'''
-@pytest.fixture
-def repo():
-    return MemoryRepository()  # TODO: понять, что возвращать
-@pytest.fixture
-def custom_class():
-    class Custom:
-        pk = 0
-
-    return Custom
-
+    return SQLiteRepository('test.db', Test)
 
 def test_crud(repo, custom_class):
     obj = custom_class()
