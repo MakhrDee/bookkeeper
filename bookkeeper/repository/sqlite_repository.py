@@ -3,17 +3,9 @@
 """
 
 import sqlite3
-from abc import ABC
-from dataclasses import dataclass
 from inspect import get_annotations
 from typing import Any
 from bookkeeper.repository.abstract_repository import AbstractRepository, T
-
-
-@dataclass
-class Test:
-    name: str
-    pk: int = 0
 
 
 class SQLiteRepository(AbstractRepository[T]):
@@ -36,6 +28,10 @@ class SQLiteRepository(AbstractRepository[T]):
                 f'("id" integer primary key autoincrement, "amount" text, "category" text, '
                 f'"expense_date" text, "added_date" text, "comment" text);'
             )
+            cur.execute(
+                f'CREATE TABLE IF NOT EXISTS "Test" '
+                f'("id" integer primary key autoincrement, "name" text, "parent" integer, "comment" text);'
+                )
         con.close()
 
     def add(self, obj: T) -> int:
@@ -91,6 +87,17 @@ class SQLiteRepository(AbstractRepository[T]):
             cur = con.cursor()
             cur.execute(f'UPDATE {self.table_name} SET ({names}) WHERE id = {obj.pk}', self.fields)
         con.close()'''
+        if obj.pk == 0:
+            raise ValueError('attempt to update object with unknown primary key')
+        names = list(self.fields.keys())
+        sets = ', '.join(f'{name} = \'{getattr(obj, name)}\'' for name in names)
+        with sqlite3.connect(self.db_file) as con:
+            cur = con.cursor()
+            cur.execute('PRAGMA foreign_keys = ON')
+            cur.execute(
+                f'UPDATE {self.table_name} SET {sets} WHERE pk = {obj.pk}'
+                )
+        con.close()
 
     def delete(self, pk: int) -> None:
         """ Удалить запись """
@@ -98,7 +105,3 @@ class SQLiteRepository(AbstractRepository[T]):
             cur = con.cursor()
             cur.execute(f'DELETE FROM {self.table_name} WHERE id = {pk}')
         con.close()
-
-# r = SQLiteRepository('test.sqlite', Test)
-# o = Test('John')
-# r.add(o)'''
