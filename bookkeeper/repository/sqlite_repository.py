@@ -86,7 +86,7 @@ class SQLiteRepository(AbstractRepository[T]):
             rows = cur.fetchall()  # Возвращает список корежей из БД
         con.close()
         if not rows:
-            return None
+            return []
 
         return [self.__generate_object(row) for row in rows]
 

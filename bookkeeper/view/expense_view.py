@@ -29,12 +29,12 @@ class TableModel(QtCore.QAbstractTableModel):
 
     def rowCount(self, index):
         # The length of the outer list.
-        return len(self._data[0].__dataclass_fields__)
+        return len(self._data)
 
     def columnCount(self, index):
         # The following takes the first sub-list, and returns
         # the length (only works if all rows are an equal length)
-        return len(self._data[0])
+        return len(self._data[0].__dataclass_fields__)
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -42,6 +42,7 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__()
         self.item_model = None
         self.setWindowTitle("Программа для ведения бюджета")
+        # self.setFixedSize(500, 600)
 
         self.layout = QVBoxLayout()
         self.layout.addWidget(QLabel('Последние расходы'))
@@ -54,7 +55,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
         self.layout.addWidget(QLabel('Бюджет'))
-        #self.layout.addWidget(QLabel('<TODO: таблица бюджета>\n\n\n\n\n\n\n\n'))
+        # self.layout.addWidget(QLabel('<TODO: таблица бюджета>\n\n\n\n\n\n\n\n'))
         self.budget = QtWidgets.QTableView()
         self.layout.addWidget(self.budget)
 

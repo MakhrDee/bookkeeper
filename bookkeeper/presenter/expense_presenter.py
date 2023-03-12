@@ -30,10 +30,9 @@ class ExpensePresenter:
         cat_pk = self.view.get_selected_cat()
         amount = self.view.get_amount()
         comment = self.view.get_comment()
-        exp = Expense(amount=int(round(amount)), pk=self.cat_data[cat_pk-1][1], comment=str(comment))
+        exp = Expense(amount=int(round(amount)), category=cat_pk, comment=str(comment))
         self.exp_repo.add(exp)
         self.update_expense_data()
 
     def handle_category_edit_button_clicked(self):
         self.view.show_cats_dialog(self.cat_data)
-        
