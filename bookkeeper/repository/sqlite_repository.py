@@ -77,14 +77,18 @@ class SQLiteRepository(AbstractRepository[T]):
         если условие не задано (по умолчанию), вернуть все записи
         """
         with sqlite3.connect(self.db_file) as con:
+            req: str = f'SELECT * FROM {self.table_name}'
             cur = con.cursor()
+
             if where is not None:
                 k, v = list(where.keys()), list(where.values())
-                cur.execute(f'SELECT * FROM {self.table_name} WHERE {k[0]} = "{v[0]}";')
+                cur.execute(f'{req} WHERE {k[0]} = "{v[0]}";')
             else:
-                cur.execute(f'SELECT * FROM {self.table_name}')
+                cur.execute(req)
+
             rows = cur.fetchall()  # Возвращает список корежей из БД
         con.close()
+
         if not rows:
             return []
 

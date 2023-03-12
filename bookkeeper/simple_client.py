@@ -21,7 +21,7 @@ cats = '''
 одежда
 '''.splitlines()
 
-#Category.create_from_tree(read_tree(cats), cat_repo)
+Category.create_from_tree(read_tree(cats), cat_repo)
 
 while True:
     try:
