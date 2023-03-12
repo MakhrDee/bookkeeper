@@ -9,6 +9,16 @@ class TableModel(QtCore.QAbstractTableModel):
         super(TableModel, self).__init__()
         self._data = data
 
+        self.header_names = list(data[0].__dataclass_fields__.keys())
+
+
+
+    def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
+        if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
+            return self.header_names[section]
+        return super().headerData(section, orientation, role)
+
+
     def data(self, index, role):
         if role == QtCore.Qt.DisplayRole:
             # See below for the nested-list data structure.
