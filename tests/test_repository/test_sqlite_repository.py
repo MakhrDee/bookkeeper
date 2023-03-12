@@ -10,12 +10,14 @@ def custom_class():
         pk: int = 0
         name: str = ''
         test: str = ''
-
     return Custom
+
 
 @pytest.fixture
 def repo(custom_class):
     return SQLiteRepository('test.db', custom_class)
+
+
 def test_crud(repo, custom_class):
     obj = custom_class()
     pk = repo.add(obj)
@@ -27,32 +29,6 @@ def test_crud(repo, custom_class):
     assert repo.get(pk) == obj2
     repo.delete(pk)
     assert repo.get(pk) is None
-
-'''def test_add_and_get__and_delete(repo, custom_class):
-    obj = custom_class()
-    pk = repo.add(obj)
-    o = repo.get(2387)
-    assert obj.pk == pk
-    assert repo.get(pk) == obj
-    assert o is None
-    repo.delete(pk)
-    assert repo.get(pk) is None'''
-
-'''def test_cannot_add_with_pk(repo, custom_class):
-    obj = custom_class()
-    obj.pk = 1
-    with pytest.raises(ValueError):
-        repo.add(obj)
-
-
-def test_cannot_add_without_pk(repo):
-    with pytest.raises(ValueError):
-        repo.add(0)
-
-
-def test_cannot_delete_unexistent(repo):
-    with pytest.raises(KeyError):
-        repo.delete(1)'''
 
 
 def test_cannot_update_without_pk(repo, custom_class):

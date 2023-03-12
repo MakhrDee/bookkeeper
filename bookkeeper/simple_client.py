@@ -4,7 +4,6 @@
 
 from bookkeeper.models.category import Category
 from bookkeeper.models.expense import Expense
-from bookkeeper.repository.memory_repository import MemoryRepository
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
 from bookkeeper.utils import read_tree
 
@@ -43,7 +42,7 @@ while True:
             print(cat_repo.get(int(cmd)))
             print(cmd[0])
         else:
-            print(f'неверный id')
+            print('неверный id')
         continue
     elif 'del' in cmd and cmd[-1].isdigit():
         pk = cmd.split(maxsplit=1)[1]
@@ -51,7 +50,7 @@ while True:
             cat_repo.delete(int(pk))
             print(*cat_repo.get_all(), sep='\n')
         else:
-            print(f'неверный id')
+            print('неверный id')
         continue
     elif 'up' in cmd and cmd[-1].isdigit():
         pk = cmd.split(maxsplit=1)[1]
@@ -59,7 +58,7 @@ while True:
             cat_repo.update(cat_repo.get(int(pk)))
             print(*cat_repo.get_all(), sep='\n')
         else:
-            print(f'неверный id')
+            print('неверный id')
             continue
         continue
 
@@ -71,8 +70,6 @@ while True:
         except IndexError:
             print(f'категория {name} не найдена')
             continue
-        # cat = cat[int(input('$> '))]
         exp = Expense(int(amount), cat.pk)
         exp_repo.add(exp)
         print(exp)
-

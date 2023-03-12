@@ -1,4 +1,5 @@
-from PySide6.QtWidgets import QVBoxLayout, QLabel, QWidget, QGridLayout, QComboBox, QLineEdit, QPushButton
+from PySide6.QtWidgets import QVBoxLayout, QLabel, QWidget,\
+    QGridLayout, QComboBox, QLineEdit, QPushButton
 from PySide6 import QtCore, QtWidgets
 
 from bookkeeper.view.categories_view import CategoryDialog
@@ -11,13 +12,10 @@ class TableModel(QtCore.QAbstractTableModel):
 
         self.header_names = list(data[0].__dataclass_fields__.keys())
 
-
-
     def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
             return self.header_names[section]
         return super().headerData(section, orientation, role)
-
 
     def data(self, index, role):
         if role == QtCore.Qt.DisplayRole:
@@ -49,11 +47,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.expenses_grid = QtWidgets.QTableView()
         self.layout.addWidget(self.expenses_grid)
 
-
-
-
-
-
         self.layout.addWidget(QLabel('Бюджет'))
         # self.layout.addWidget(QLabel('<TODO: таблица бюджета>\n\n\n\n\n\n\n\n'))
         self.budget = QtWidgets.QTableView()
@@ -82,7 +75,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.expense_add_button = QPushButton('Добавить')
         self.bottom_controls.addWidget(self.expense_add_button, 3, 1)
         self.expense_delete_button = QPushButton('Удалить')
-        self.bottom_controls.addWidget(self.expense_delete_button, 3, 2)  # TODO: improve buttons layout
+        self.bottom_controls.addWidget(self.expense_delete_button, 3, 2)
 
         self.bottom_widget = QWidget()
         self.bottom_widget.setLayout(self.bottom_controls)
@@ -99,7 +92,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.item_model = TableModel(data)
             self.expenses_grid.setModel(self.item_model)
             self.expenses_grid.resizeColumnsToContents()
-            grid_width = sum([self.expenses_grid.columnWidth(x) for x in range(0, self.item_model.columnCount(0) + 1)])
+            grid_width = sum([self.expenses_grid.columnWidth(x) for x
+                              in range(0, self.item_model.columnCount(0) + 1)])
             self.setFixedSize(grid_width + 80, 600)
 
     def set_category_dropdown(self, data):
@@ -116,7 +110,8 @@ class MainWindow(QtWidgets.QMainWindow):
         return float(self.amount_line_edit.text())  # TODO: обработка исключений
 
     def __get_selected_row_indices(self) -> list[int]:
-        return list(set([qmi.row() for qmi in self.expenses_grid.selectionModel().selection().indexes()]))
+        return list(set([qmi.row() for qmi in
+                         self.expenses_grid.selectionModel().selection().indexes()]))
 
     def get_selected_expenses(self) -> list[int] | None:
         idx = self.__get_selected_row_indices()

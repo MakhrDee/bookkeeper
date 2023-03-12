@@ -2,6 +2,7 @@ from collections import deque
 from PySide6.QtWidgets import *
 from PySide6.QtGui import *
 
+
 class CategoryDialog(QDialog):
     def __init__(self, data):
         super().__init__()
@@ -12,10 +13,10 @@ class CategoryDialog(QDialog):
         self.model.setHorizontalHeaderLabels(['Категория'])
         self.tree.header().setDefaultSectionSize(180)
         self.tree.setModel(self.model)
-        data = [{'unique_id': c.pk, 'category_name': c.name, 'parent_id': c.parent} for c in data]
+        data = [{'unique_id': c.pk, 'category_name': c.name,
+                 'parent_id': c.parent} for c in data]
         self.importData(data)
         self.tree.expandAll()
-
 
     def importData(self, data, root=None):
         self.model.setRowCount(0)

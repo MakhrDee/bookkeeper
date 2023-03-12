@@ -1,5 +1,5 @@
 """
-# TODO: ADD DOCSTRING
+Репозиторий для работы с БД sqlite
 """
 
 import sqlite3
@@ -10,7 +10,7 @@ from bookkeeper.repository.abstract_repository import AbstractRepository, T
 
 class SQLiteRepository(AbstractRepository[T]):
     """
-    TODO: ADD DOCSTRING
+    Позволяет работать с sqlite-запросами
     """
     def __init__(self, db_file: str, cls: type) -> None:
         self.db_file = db_file
@@ -58,7 +58,7 @@ class SQLiteRepository(AbstractRepository[T]):
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
             q = f'SELECT * FROM {self.table_name} WHERE pk = {pk}'
-            row = cur.execute(q).fetchone()  # Возвращает список из корежа со значением из БД
+            row = cur.execute(q).fetchone()
         con.close()
 
         if row is None:
@@ -96,12 +96,6 @@ class SQLiteRepository(AbstractRepository[T]):
 
     def update(self, obj: T) -> None:
         """ Обновить данные об объекте. Объект должен содержать поле pk. """
-
-        '''names = ' = ?, '.join(self.fields.keys())
-        with sqlite3.connect(self.db_file) as con:
-            cur = con.cursor()
-            cur.execute(f'UPDATE {self.table_name} SET ({names}) WHERE id = {obj.pk}', self.fields)
-        con.close()'''
         if obj.pk == 0:
             raise ValueError('attempt to update object with unknown primary key')
         names = list(self.fields.keys())
@@ -111,7 +105,7 @@ class SQLiteRepository(AbstractRepository[T]):
             cur.execute('PRAGMA foreign_keys = ON')
             cur.execute(
                 f'UPDATE {self.table_name} SET {sets} WHERE pk = {obj.pk}'
-                )
+            )
         con.close()
 
     def delete(self, pk: int) -> None:

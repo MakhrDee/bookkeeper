@@ -1,10 +1,11 @@
-from bookkeeper.repository.sqlite_repository import SQLiteRepository
-from bookkeeper.models.expense import Expense
+"""
+Вычисляние бюджета на день/неделю/месяц
+"""
 
 
 class Budget:
     """
-    TODO: DOCSTRING
+    Содержит бюджет на день/неделю/месяц
     """
 
     def day_budget(self):
@@ -21,4 +22,3 @@ class Budget:
         """
         Выставляется бюджет на месяц в таблице
         """
-
