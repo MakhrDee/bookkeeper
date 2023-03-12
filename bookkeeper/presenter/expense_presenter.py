@@ -1,9 +1,10 @@
 from bookkeeper.models.expense import Expense
+from typing import Any
 
 
 class ExpensePresenter:
 
-    def __init__(self, model, view, cat_repo, exp_repo):
+    def __init__(self, model: Any, view: Any, cat_repo: Any, exp_repo: Any) -> None:
         self.model = model
         self.view = view
         self.exp_repo = exp_repo
@@ -18,7 +19,7 @@ class ExpensePresenter:
         self.view.on_category_edit_button_clicked(
             self.handle_category_edit_button_clicked)
 
-    def update_expense_data(self):
+    def update_expense_data(self) -> None:
         self.exp_data = self.exp_repo.get_all()
         for e in self.exp_data:
             for c in self.cat_data:
@@ -27,7 +28,7 @@ class ExpensePresenter:
                     break
         self.view.set_expense_table(self.exp_data)
 
-    def show(self):
+    def show(self) -> None:
         self.view.show()
         self.update_expense_data()
         self.view.set_category_dropdown(self.cat_data)

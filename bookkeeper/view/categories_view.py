@@ -1,10 +1,11 @@
 from collections import deque
+from typing import Any
 from PySide6.QtWidgets import *
 from PySide6.QtGui import *
 
 
 class CategoryDialog(QDialog):
-    def __init__(self, data):
+    def __init__(self, data: Any):
         super().__init__()
         self.tree = QTreeView(self)
         layout = QVBoxLayout(self)
@@ -18,11 +19,11 @@ class CategoryDialog(QDialog):
         self.importData(data)
         self.tree.expandAll()
 
-    def importData(self, data, root=None):
+    def importData(self, data: Any, root: Any = None) -> None:
         self.model.setRowCount(0)
         if root is None:
             root = self.model.invisibleRootItem()
-        seen = {}   # List of  QStandardItem
+        seen: Any = {}   # List of  QStandardItem
         values = deque(data)
         while values:
             value = values.popleft()

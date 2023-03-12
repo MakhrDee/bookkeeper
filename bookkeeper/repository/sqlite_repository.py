@@ -47,7 +47,7 @@ class SQLiteRepository(AbstractRepository[T]):
         return obj.pk
 
     def __generate_object(self, db_row: tuple) -> T:
-        obj = self.cls(self.fields)
+        obj: T = self.cls(self.fields)
         for field, value in zip(self.fields, db_row[1:]):
             setattr(obj, field, value)
         obj.pk = db_row[0]
