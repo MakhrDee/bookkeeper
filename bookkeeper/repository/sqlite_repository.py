@@ -19,19 +19,13 @@ class SQLiteRepository(AbstractRepository[T]):
         self.fields.pop('pk')
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
-            cur.execute(
-                f'CREATE TABLE IF NOT EXISTS "Category" '
-                f'("id" integer primary key autoincrement, "name" text, "parent" integer, "comment" text);'
-                )
-            cur.execute(
-                f'CREATE TABLE IF NOT EXISTS "Expense" '
-                f'("id" integer primary key autoincrement, "amount" text, "category" text, '
-                f'"expense_date" text, "added_date" text, "comment" text);'
-            )
-            cur.execute(
-                f'CREATE TABLE IF NOT EXISTS "Test" '
-                f'("id" integer primary key autoincrement, "name" text, "parent" integer, "comment" text);'
-                )
+            res = cur.execute('SELECT name FROM sqlite_master')
+            db_tables = [t[0].lower() for t in res.fetchall()]
+            if self.table_name not in db_tables:
+                col_names = ', '.join(self.fields.keys())
+                q = f'CREATE TABLE {self.table_name} (' \
+                    f'"pk" INTEGER PRIMARY KEY AUTOINCREMENT, {col_names})'
+                cur.execute(q)
         con.close()
 
     def add(self, obj: T) -> int:
