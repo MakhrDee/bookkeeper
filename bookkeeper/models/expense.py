@@ -17,9 +17,9 @@ class Expense:
     comment - комментарий
     pk - id записи в базе данных
     """
-    amount: float
-    category: int
-    comment: str
+    amount: float = 0.0
+    category: str | int = 0
+    comment: str = ''
     expense_date: datetime = field(default_factory=datetime.now)
     added_date: datetime = field(default_factory=datetime.now)
     pk: int = 0
