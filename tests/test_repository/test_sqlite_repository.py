@@ -29,8 +29,10 @@ def test_crud(repo, custom_class):
 def test_add_and_get(repo, custom_class):
     obj = custom_class()
     pk = repo.add(obj)
+    o = repo.get(2387)
     assert obj.pk == pk
     assert repo.get(pk) == obj
+    assert o is None
 
 '''def test_cannot_add_with_pk(repo, custom_class):
     obj = custom_class()
