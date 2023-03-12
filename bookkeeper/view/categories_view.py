@@ -1,3 +1,6 @@
+"""
+Модуль графического диалогового окна категорий
+"""
 from collections import deque
 from typing import Any
 from PySide6.QtWidgets import *
@@ -5,6 +8,9 @@ from PySide6.QtGui import *
 
 
 class CategoryDialog(QDialog):
+    """
+    Диалоговое окно категорий
+    """
     def __init__(self, data: Any):
         super().__init__()
         self.tree = QTreeView(self)
@@ -20,6 +26,9 @@ class CategoryDialog(QDialog):
         self.tree.expandAll()
 
     def importData(self, data: Any, root: Any = None) -> None:
+        """
+        Импорт данных по категориям в дерево
+        """
         self.model.setRowCount(0)
         if root is None:
             root = self.model.invisibleRootItem()

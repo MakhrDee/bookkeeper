@@ -24,9 +24,9 @@ class SQLiteRepository(AbstractRepository[T]):
             db_tables = [t[0].lower() for t in res.fetchall()]
             if self.table_name not in db_tables:
                 col_names = ', '.join(self.fields.keys())
-                q = f'CREATE TABLE {self.table_name} (' \
+                req = f'CREATE TABLE {self.table_name} (' \
                     f'"pk" INTEGER PRIMARY KEY AUTOINCREMENT, {col_names})'
-                cur.execute(q)
+                cur.execute(req)
         con.close()
 
     def add(self, obj: T) -> int:
@@ -35,13 +35,13 @@ class SQLiteRepository(AbstractRepository[T]):
         также записать id в атрибут pk
         """
         names = ', '.join(self.fields.keys())
-        p = ', '.join("?" * len(self.fields))
+        par = ', '.join("?" * len(self.fields))
         values = [getattr(obj, x) for x in self.fields]
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
             cur.execute('PRAGMA foreign_keys = ON')
-            q = f'INSERT INTO {self.table_name} ({names}) VALUES ({p})'
-            cur.execute(q, values)
+            req = f'INSERT INTO {self.table_name} ({names}) VALUES ({par})'
+            cur.execute(req, values)
             obj.pk = cur.lastrowid
         con.close()
         return obj.pk
@@ -57,8 +57,8 @@ class SQLiteRepository(AbstractRepository[T]):
         """ Получить объект по id """
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
-            q = f'SELECT * FROM {self.table_name} WHERE pk = {pk}'
-            row = cur.execute(q).fetchone()
+            req = f'SELECT * FROM {self.table_name} WHERE pk = {pk}'
+            row = cur.execute(req).fetchone()
         con.close()
 
         if row is None:
@@ -81,8 +81,8 @@ class SQLiteRepository(AbstractRepository[T]):
             cur = con.cursor()
 
             if where is not None:
-                k, v = list(where.keys()), list(where.values())
-                cur.execute(f'{req} WHERE {k[0]} = "{v[0]}";')
+                key, val = list(where.keys()), list(where.values())
+                cur.execute(f'{req} WHERE {key[0]} = "{val[0]}";')
             else:
                 cur.execute(req)
 
