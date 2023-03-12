@@ -15,6 +15,7 @@ class SQLiteRepository(AbstractRepository[T]):
     def __init__(self, db_file: str, cls: type) -> None:
         self.db_file = db_file
         self.table_name = cls.__name__.lower()
+        self.cls = cls
         self.fields = get_annotations(cls, eval_str=True)
         self.fields.pop('pk')
         with sqlite3.connect(self.db_file) as con:
@@ -39,22 +40,35 @@ class SQLiteRepository(AbstractRepository[T]):
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
             cur.execute('PRAGMA foreign_keys = ON')
-            cur.execute(
-                f'INSERT INTO {self.table_name} ({names}) VALUES ({p})',
-                values
-                )
+            q = f'INSERT INTO {self.table_name} ({names}) VALUES ({p})'
+            cur.execute(q, values)
             obj.pk = cur.lastrowid
         con.close()
         return obj.pk
+
+    def __generate_object(self, db_row: tuple) -> T:
+        obj = self.cls(self.fields)
+        for field, value in zip(self.fields, db_row[1:]):
+            setattr(obj, field, value)
+        obj.pk = db_row[0]
+        return obj
 
     def get(self, pk: int) -> T | None:
         """ Получить объект по id """
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
-            cur.execute(f'SELECT * FROM {self.table_name} WHERE id = {pk}')
-            res: T = cur.fetchone()  # Возвращает список из корежа со значением из БД
+            q = f'SELECT * FROM {self.table_name} WHERE pk = {pk}'
+            row = cur.execute(q).fetchone()  # Возвращает список из корежа со значением из БД
         con.close()
-        return res
+
+        if row is None:
+            return None
+
+        obj = self.cls()
+        for field, value in zip(self.fields, row[1:]):
+            setattr(obj, field, value)
+        obj.pk = pk
+        return self.__generate_object(row)
 
     def get_all(self, where: dict[str, Any] | None = None) -> list[T]:
         """
@@ -69,9 +83,12 @@ class SQLiteRepository(AbstractRepository[T]):
                 cur.execute(f'SELECT * FROM {self.table_name} WHERE {k[0]} = "{v[0]}";')
             else:
                 cur.execute(f'SELECT * FROM {self.table_name}')
-            res = cur.fetchall()  # Возвращает список корежей из БД
+            rows = cur.fetchall()  # Возвращает список корежей из БД
         con.close()
-        return res
+        if rows is None:
+            return None
+
+        return [self.__generate_object(row) for row in rows]
 
     def update(self, obj: T) -> None:
         """ Обновить данные об объекте. Объект должен содержать поле pk. """
@@ -97,5 +114,5 @@ class SQLiteRepository(AbstractRepository[T]):
         """ Удалить запись """
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
-            cur.execute(f'DELETE FROM {self.table_name} WHERE id = {pk}')
+            cur.execute(f'DELETE FROM {self.table_name} WHERE pk = {pk}')
         con.close()
