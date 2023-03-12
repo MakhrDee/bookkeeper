@@ -7,12 +7,18 @@ class ExpensePresenter:
         self.model = model
         self.view = view
         self.exp_repo = exp_repo
-        self.exp_data = self.exp_repo.get_all()
-        self.cat_data = cat_repo.get_all()
+        self.exp_data = None
+        self.cat_data = cat_repo.get_all()  # TODO: implement update_cat_data() similar to update_expense_data()
         self.view.on_expense_add_button_clicked(self.handle_expense_add_button_clicked)
+        self.view.on_category_edit_button_clicked(self.handle_category_edit_button_clicked)
 
     def update_expense_data(self):
         self.exp_data = self.exp_repo.get_all()
+        for e in self.exp_data:
+            for c in self.cat_data:
+                if c.pk == e.category:
+                    e.category = c.name
+                    break
         self.view.set_expense_table(self.exp_data)
 
     def show(self):
@@ -20,10 +26,14 @@ class ExpensePresenter:
         self.update_expense_data()
         self.view.set_category_dropdown(self.cat_data)
 
-    def handle_expense_add_button_clicked(self):
+    def handle_expense_add_button_clicked(self) -> None:
         cat_pk = self.view.get_selected_cat()
         amount = self.view.get_amount()
         comment = self.view.get_comment()
-        exp = Expense(int(round(amount)), self.cat_data[cat_pk-1][1], str(comment))
+        exp = Expense(amount=int(round(amount)), pk=self.cat_data[cat_pk-1][1], comment=str(comment))
         self.exp_repo.add(exp)
         self.update_expense_data()
+
+    def handle_category_edit_button_clicked(self):
+        self.view.show_cats_dialog(self.cat_data)
+        
