@@ -8,7 +8,7 @@ from bookkeeper.repository.memory_repository import MemoryRepository
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
 from bookkeeper.utils import read_tree
 
-cat_repo = SQLiteRepository[Category]('test.db', Category)  # TODO: репозиторий sqlite пока не реализован
+cat_repo = SQLiteRepository[Category]('test.db', Category)
 exp_repo = SQLiteRepository[Expense]('test.db', Expense)
 
 cats = '''
@@ -21,7 +21,7 @@ cats = '''
 одежда
 '''.splitlines()
 
-#Category.create_from_tree(read_tree(cats), cat_repo)  # TODO: отключить выполнение при каждом запуске
+#Category.create_from_tree(read_tree(cats), cat_repo)
 
 while True:
     try:
@@ -63,7 +63,7 @@ while True:
             continue
         continue
 
-    elif cmd[0].isdecimal():  # TODO: вызывает ошибку AttributeError
+    elif cmd[0].isdecimal():
         amount, name = cmd.split(maxsplit=1)
         try:
             cat = cat_repo.get_all({'name': name})[0]
@@ -76,4 +76,3 @@ while True:
         exp_repo.add(exp)
         print(exp)
 
-    # TODO: добавить методы add и update
