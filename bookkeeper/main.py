@@ -13,10 +13,10 @@ DB_NAME = 'test.db'
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     view = MainWindow()
-    model = None  # TODO: здесь должна быть модель
+    model = None
     cat_repo = SQLiteRepository[Category](DB_NAME, Category)
     exp_repo = SQLiteRepository[Expense](DB_NAME, Expense)
 
-    window = ExpensePresenter(model, view, cat_repo, exp_repo)  # TODO: передать три репозитория
+    window = ExpensePresenter(model, view, cat_repo, exp_repo)
     window.show()
     app.exec_()
