@@ -56,7 +56,6 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__()
         self.item_model = None
         self.setWindowTitle("Программа для ведения бюджета")
-        # self.setFixedSize(500, 600)
 
         self.layout = QVBoxLayout()
         self.layout.addWidget(QLabel('Последние расходы'))
@@ -64,7 +63,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.layout.addWidget(self.expenses_grid)
 
         self.layout.addWidget(QLabel('Бюджет'))
-        # self.layout.addWidget(QLabel('<TODO: таблица бюджета>\n\n\n\n\n\n\n\n'))
         self.budget = QtWidgets.QTableView()
         self.layout.addWidget(self.budget)
 
@@ -72,7 +70,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.bottom_controls.addWidget(QLabel('Сумма'), 0, 0)
 
-        self.amount_line_edit = QLineEdit()  # TODO: добавить валидатор
+        self.amount_line_edit = QLineEdit()
 
         self.bottom_controls.addWidget(self.amount_line_edit, 0, 1)
         self.bottom_controls.addWidget(QLabel('Категория'), 1, 0)
